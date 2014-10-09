@@ -1,7 +1,7 @@
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,10 +21,13 @@ public class RedisFun {
         simple.setTest("bar");
         simple.setTest2("baz");
 
-        //redisTemplate.boundValueOps(simple.getTest()).set(simple);
         redisTemplate.opsForValue().set(simple.getTest(), simple);
 
-        Simple foo = redisTemplate.boundValueOps(simple.getTest()).get();
-        return foo;
+        return redisTemplate.boundValueOps(simple.getTest()).get();
     }
+
+    public void testMethod(Message<String> message) {
+        System.out.println(message.getPayload());
+    }
+
 }

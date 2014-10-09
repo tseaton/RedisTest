@@ -6,15 +6,11 @@ import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-/**
- * Created by tylers on 10/8/14.
- */
-
 @Configuration
-public class AppConfig {
+public class RedisConfig {
 
     @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
+    public JedisConnectionFactory redisConnectionFactory() {
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
         jedisConnectionFactory.setPort(6379);
         return jedisConnectionFactory;
@@ -23,7 +19,7 @@ public class AppConfig {
     @Bean
     public RedisTemplate redisTemplate() {
         RedisTemplate<String, Simple> redisTemplate = new RedisTemplate<String, Simple>();
-        redisTemplate.setConnectionFactory(jedisConnectionFactory());
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(stringRedisSerializer());
         redisTemplate.setValueSerializer(jacksonRedisSerializer());
         return redisTemplate;
@@ -31,7 +27,8 @@ public class AppConfig {
 
     @Bean
     public RedisSerializer<Simple> jacksonRedisSerializer() {
-        JacksonJsonRedisSerializer<Simple> jacksonJsonRedisSerializer = new JacksonJsonRedisSerializer<Simple>(Simple.class);
+        JacksonJsonRedisSerializer<Simple> jacksonJsonRedisSerializer =
+            new JacksonJsonRedisSerializer<Simple>(Simple.class);
         return jacksonJsonRedisSerializer;
     }
 
