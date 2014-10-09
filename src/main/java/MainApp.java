@@ -10,7 +10,6 @@ import org.springframework.integration.config.EnableIntegration;
 @EnableAutoConfiguration
 @EnableConfigurationProperties
 @ComponentScan
-@ImportResource("classpath:applicationContext.xml")
 @EnableIntegration
 public class MainApp {
 

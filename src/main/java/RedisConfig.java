@@ -27,15 +27,12 @@ public class RedisConfig {
 
     @Bean
     public RedisSerializer<Simple> jacksonRedisSerializer() {
-        JacksonJsonRedisSerializer<Simple> jacksonJsonRedisSerializer =
-            new JacksonJsonRedisSerializer<Simple>(Simple.class);
-        return jacksonJsonRedisSerializer;
+        return new JacksonJsonRedisSerializer<Simple>(Simple.class);
     }
 
     @Bean
     public RedisSerializer<String> stringRedisSerializer() {
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-        return stringRedisSerializer;
+        return new StringRedisSerializer();
     }
 
 }
