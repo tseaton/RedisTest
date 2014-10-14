@@ -1,12 +1,18 @@
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 
 @Configuration
+@EnableAutoConfiguration
 public class RedisConfig {
 
     @Bean
@@ -18,7 +24,7 @@ public class RedisConfig {
 
     @Bean
     public RedisTemplate redisTemplate() {
-        RedisTemplate<String, Simple> redisTemplate = new RedisTemplate<String, Simple>();
+        final RedisTemplate<String, Simple> redisTemplate = new RedisTemplate<String, Simple>();
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(stringRedisSerializer());
         redisTemplate.setValueSerializer(jacksonRedisSerializer());
@@ -33,6 +39,19 @@ public class RedisConfig {
     @Bean
     public RedisSerializer<String> stringRedisSerializer() {
         return new StringRedisSerializer();
+    }
+
+    @Bean
+    MessageListenerAdapter messageListener() {
+        return new MessageListenerAdapter( new RedisMessageListener() );
+    }
+
+    @Bean
+    RedisMessageListenerContainer redisContainer() {
+        final RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory( redisConnectionFactory() );
+        container.addMessageListener( messageListener(), new ChannelTopic( "my-queue" ) );
+        return container;
     }
 
 }
